@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>GitHub Activity</title>
+  <meta name="description" content="Github Activity.">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <main>
+
+    {{#if session}}
+    <p>
+      You are now logged in.
+    </p>
+    <p>
+      <a href="/logoff">Sign out</a>
+    </p>
+    {{else}}
+    <a class="container" href="/auth/github">Log-in with GitHub</a>
+    {{/if}}
+
+    {{#if repos}}
+    <ul id="infinite-list-hidden" style="visibility: hidden; width: 90%;height: 100px;">
+
+      {{#each repos}}
+      <li class="post">{{full_name}} -- owned by {{owner.login}}</li>
+      {{/each}}
+
+    </ul>
+    {{/if}}
+
+    {{#if repos}}
+    <h2>Repositories:</h2>
+
+    <ul id="infinite-list" style="overflow: scroll; width: 90%;height: 100px;">
+    </ul>
+    {{/if}}
+  </main>
+
+  <script>
+    const items = document.getElementById('infinite-list-hidden').children;
+    var moreTarget = document.getElementById('infinite-list');
+    const itemsLength = items.length;
+    var lastIdx = 0;
+
+    var loadMore = function (times) {
+      const newTarget = times + lastIdx;
+
+      for (; lastIdx < newTarget; lastIdx++) {
+        if (items[lastIdx]) {
+          moreTarget.appendChild(items[lastIdx]);
+        }
+      }
+    }
+
+    loadMore(5);
+    moreTarget.addEventListener('scroll', function () {
+      if (moreTarget.scrollTop + moreTarget.clientHeight >= moreTarget.scrollHeight) {
+        loadMore(3);
+      }
+    });
+  </script>
+</body>
+
+</html>
